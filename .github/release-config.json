@@ -1,0 +1,75 @@
+{
+  "name": "Release Configuration",
+  "description": "Configuration for GitHub releases",
+  "releases": {
+    "enabled": true,
+    "draft_on_error": true,
+    "file_assets": [
+      {
+        "path": "*.msi",
+        "name": "Skill Manager Setup (Windows)"
+      },
+      {
+        "path": "*.exe",
+        "name": "Skill Manager (Windows)"
+      },
+      {
+        "path": "*.dmg",
+        "name": "Skill Manager (macOS)"
+      },
+      {
+        "path": "*.app.tar.gz",
+        "name": "Skill Manager (macOS)"
+      },
+      {
+        "path": "*.AppImage",
+        "name": "Skill Manager (Linux AppImage)"
+      },
+      {
+        "path": "*.deb",
+        "name": "Skill Manager (Debian/Ubuntu)"
+      },
+      {
+        "path": "*.rpm",
+        "name": "Skill Manager (Fedora/RHEL)"
+      }
+    ]
+  },
+  "versioning": {
+    "strategy": "git-tag",
+    "tag_prefix": "v",
+    "format": "semver"
+  },
+  "platforms": {
+    "windows": {
+      "targets": ["msi", "nsis"],
+      "icon": "icons/icon.ico",
+      "minimum_os_version": "10.0"
+    },
+    "macos": {
+      "targets": ["dmg", "app"],
+      "icon": "icons/icon.icns",
+      "minimum_os_version": "10.15"
+    },
+    "linux": {
+      "targets": ["deb", "rpm", "appimage"],
+      "icon": "icons",
+      "minimum_os_version": "18.04"
+    }
+  },
+  "signing": {
+    "windows": {
+      "enabled": true,
+      "certificate": "windows-cert.pfx",
+      "timestamp_server": "http://timestamp.digicert.com"
+    },
+    "macos": {
+      "enabled": false,
+      "identity": null,
+      "notarization": false
+    },
+    "linux": {
+      "enabled": false
+    }
+  }
+}

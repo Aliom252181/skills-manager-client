@@ -1,18 +1,45 @@
 {
   "name": "skill-manager",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "A powerful skill management platform with MCP support, AI integration, and workflow automation",
   "type": "module",
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_USERNAME/skill-manager"
+  },
+  "keywords": [
+    "skill",
+    "mcp",
+    "ai",
+    "workflow",
+    "automation",
+    "claude",
+    "tauri"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
     "preview": "vite preview",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint . --ext ts,tsx --fix",
+    "typecheck": "tsc --noEmit",
+    "test": "echo \"No tests configured\" && exit 0",
+    "test:coverage": "echo \"No tests configured\" && exit 0",
     "tauri": "tauri",
     "tauri:dev": "tauri dev",
     "tauri:build": "tauri build",
     "tauri:build:windows": "tauri build --target x86_64-pc-windows-msvc",
-    "tauri:build:mac": "tauri build --target aarch64-apple-darwin"
+    "tauri:build:mac": "tauri build --target aarch64-apple-darwin",
+    "tauri:build:linux": "tauri build --target x86_64-unknown-linux-gnu",
+    "tauri:build:all": "npm run tauri:build:windows && npm run tauri:build:mac && npm run tauri:build:linux",
+    "release": "standard-version",
+    "release:major": "standard-version --release-as major",
+    "release:minor": "standard-version --release-as minor",
+    "release:patch": "standard-version --release-as patch",
+    "postinstall": "cd src-tauri && cargo fetch"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -55,8 +82,13 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
+    "standard-version": "^9.5.0",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
     "vite": "^7.2.4"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
   }
 }
