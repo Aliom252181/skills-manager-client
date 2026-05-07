@@ -1,14 +1,14 @@
 {
   "name": "skill-manager",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.0-beta.1",
   "description": "A powerful skill management platform with MCP support, AI integration, and workflow automation",
   "type": "module",
   "author": "Your Name",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/YOUR_USERNAME/skill-manager"
+    "url": "https://github.com/Aliom252181/skills-manager-client"
   },
   "keywords": [
     "skill",
