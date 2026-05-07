@@ -3,6 +3,7 @@ import Layout from './components/layout/Layout';
 import MySkills from './pages/MySkills';
 import Marketplace from './pages/Marketplace';
 import Settings from './pages/Settings';
+import Executor from './pages/Executor';
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
         element: <Marketplace />,
       },
       {
+        path: 'executor',
+        element: <Executor />,
+      },
+      {
         path: 'settings',
         element: <Settings />,
       },
@@ -31,7 +36,6 @@ const router = createBrowserRouter([
     path: '*',
     element: <Navigate to="/my-skills" replace />,
   }
-]);
 
 function App() {
   return <RouterProvider router={router} />;

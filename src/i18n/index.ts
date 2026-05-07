@@ -108,6 +108,7 @@ const resources = {
       dashboard: "仪表盘",
       mySkills: "我的 Skills",
       marketplace: "市场",
+      executor: "执行器",
       security: "安全",
       settings: "设置",
 

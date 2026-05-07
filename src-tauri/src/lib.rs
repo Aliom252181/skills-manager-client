@@ -7,6 +7,9 @@ use walkdir::WalkDir;
 mod security;
 use security::SecurityReport;
 
+mod mcp_server;
+use mcp_server::start_mcp_server_in_background;
+
 // 主目录配置
 const PRIMARY_SKILLS_DIR: &str = ".claude/skills";
 
@@ -1140,6 +1143,12 @@ fn get_platform_info() -> Result<serde_json::Value, String> {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    let runtime = tokio::runtime::Runtime::new().expect("Failed to create tokio runtime");
+    
+    runtime.block_on(async {
+        start_mcp_server_in_background("127.0.0.1:8080");
+    });
+
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
         .invoke_handler(tauri::generate_handler![
@@ -1159,8 +1168,29 @@ pub fn run() {
             create_symlink,
             create_all_symlinks,
             remove_symlink,
-            get_platform_info
+            get_platform_info,
+            start_mcp_server,
+            stop_mcp_server
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+}
+
+#[tauri::command]
+fn start_mcp_server(port: Option<u16>) -> Result<String, String> {
+    let port = port.unwrap_or(8080);
+    let addr = format!("127.0.0.1:{}", port);
+    
+    tokio::spawn(async move {
+        if let Err(e) = mcp_server::start_mcp_server(&addr).await {
+            eprintln!("MCP server error on {}: {}", addr, e);
+        }
+    });
+    
+    Ok(format!("MCP server started on {}", addr))
+}
+
+#[tauri::command]
+fn stop_mcp_server() -> Result<String, String> {
+    Ok("MCP server stop not implemented".to_string())
 }

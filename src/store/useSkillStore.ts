@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { InstalledSkill, MarketplaceSkill } from '../types';
 import { invoke } from '@tauri-apps/api/core';
+import { mcpClientManager, skillExecutorManager } from '../mcp';
+import type { McpServerInfo, McpTool, ExecutionResult, SkillExecutionContext } from '../mcp';
 
 interface AgentConfig {
   id: string;
@@ -40,6 +42,13 @@ interface InstallResult {
   securityReport?: SecurityReport;
 }
 
+interface McpConnection {
+  url: string;
+  connected: boolean;
+  serverInfo?: McpServerInfo;
+  error?: string;
+}
+
 interface SkillStore {
   installedSkills: InstalledSkill[];
   marketplaceSkills: MarketplaceSkill[];
@@ -66,6 +75,17 @@ interface SkillStore {
 
   // 平台信息
   platform: { os: string; arch: string; family: string } | null;
+
+  // MCP 客户端状态
+  mcpConnections: McpConnection[];
+  selectedMcpServerUrl: string;
+  isConnecting: boolean;
+
+  // 执行器状态
+  isExecuting: boolean;
+  executionResult: ExecutionResult | null;
+  executionContext: SkillExecutionContext | null;
+  availableTools: McpTool[];
 
   // Actions
   fetchMarketplaceSkills: () => Promise<void>;
@@ -102,6 +122,18 @@ interface SkillStore {
   checkCustomSymlinks: () => Promise<void>;
   addCustomSymlinkPath: (path: string) => void;
   removeCustomSymlinkPath: (path: string) => void;
+
+  // MCP 客户端 Actions
+  connectMcpServer: (url: string) => Promise<void>;
+  disconnectMcpServer: (url: string) => Promise<void>;
+  setSelectedMcpServerUrl: (url: string) => void;
+  getAvailableTools: () => Promise<void>;
+
+  // 执行器 Actions
+  executeSkill: (skillId: string, skillPath: string, input: string, variables?: Record<string, unknown>) => Promise<ExecutionResult>;
+  invokeTool: (toolName: string, arguments_: Record<string, unknown>) => Promise<ExecutionResult>;
+  clearExecutionResult: () => void;
+  getExecutionContext: (skillId: string) => SkillExecutionContext | null;
 }
 
 export const useSkillStore = create<SkillStore>()(
@@ -131,6 +163,17 @@ export const useSkillStore = create<SkillStore>()(
       // 平台信息
       platform: null,
 
+      // MCP 客户端状态
+      mcpConnections: [],
+      selectedMcpServerUrl: '',
+      isConnecting: false,
+
+      // 执行器状态
+      isExecuting: false,
+      executionResult: null,
+      executionContext: null,
+      availableTools: [],
+
       setDefaultInstallLocation: (location: 'system' | 'project') => {
         set({ defaultInstallLocation: location });
       },
@@ -141,6 +184,131 @@ export const useSkillStore = create<SkillStore>()(
 
       clearLastSecurityReport: () => {
         set({ lastSecurityReport: null });
+      },
+
+      // MCP 客户端 Actions
+      connectMcpServer: async (url: string) => {
+        set({ isConnecting: true });
+        try {
+          const serverInfo = await mcpClientManager.connectClient(url);
+          set((state) => {
+            const connections = state.mcpConnections.filter(c => c.url !== url);
+            connections.push({ url, connected: true, serverInfo });
+            return {
+              mcpConnections: connections,
+              selectedMcpServerUrl: url,
+              availableTools: serverInfo.tools,
+              isConnecting: false,
+            };
+          });
+        } catch (error) {
+          const errorMsg = error instanceof Error ? error.message : 'Connection failed';
+          set((state) => {
+            const connections = state.mcpConnections.filter(c => c.url !== url);
+            connections.push({ url, connected: false, error: errorMsg });
+            return {
+              mcpConnections: connections,
+              isConnecting: false,
+            };
+          });
+          throw error;
+        }
+      },
+
+      disconnectMcpServer: async (url: string) => {
+        mcpClientManager.disconnectClient(url);
+        set((state) => ({
+          mcpConnections: state.mcpConnections.map(c =>
+            c.url === url ? { ...c, connected: false } : c
+          ),
+          selectedMcpServerUrl: state.selectedMcpServerUrl === url ? '' : state.selectedMcpServerUrl,
+        }));
+      },
+
+      setSelectedMcpServerUrl: (url: string) => {
+        set({ selectedMcpServerUrl: url });
+      },
+
+      getAvailableTools: async () => {
+        const { selectedMcpServerUrl } = get();
+        if (!selectedMcpServerUrl) return;
+
+        try {
+          const tools = await skillExecutorManager.getTools(selectedMcpServerUrl);
+          set({ availableTools: tools });
+        } catch (error) {
+          console.error('Failed to get available tools:', error);
+        }
+      },
+
+      // 执行器 Actions
+      executeSkill: async (skillId: string, skillPath: string, input: string, variables?: Record<string, unknown>) => {
+        set({ isExecuting: true });
+        try {
+          const { selectedMcpServerUrl } = get();
+          if (!selectedMcpServerUrl) {
+            throw new Error('No MCP server selected');
+          }
+
+          const result = await skillExecutorManager.executeSkill(
+            selectedMcpServerUrl,
+            skillId,
+            skillPath,
+            input,
+            variables
+          );
+
+          const context = skillExecutorManager.getExecutorContext(selectedMcpServerUrl, skillId);
+
+          set({
+            executionResult: result,
+            executionContext: context || null,
+            isExecuting: false,
+          });
+
+          return result;
+        } catch (error) {
+          set({ isExecuting: false });
+          throw error;
+        }
+      },
+
+      invokeTool: async (toolName: string, arguments_: Record<string, unknown>) => {
+        set({ isExecuting: true });
+        try {
+          const { selectedMcpServerUrl } = get();
+          if (!selectedMcpServerUrl) {
+            throw new Error('No MCP server selected');
+          }
+
+          const response = await skillExecutorManager.invokeTool(selectedMcpServerUrl, toolName, arguments_);
+
+          const result: ExecutionResult = {
+            success: response.success,
+            output: response.success ? JSON.stringify(response.result, null, 2) : undefined,
+            error: response.error,
+          };
+
+          set({
+            executionResult: result,
+            isExecuting: false,
+          });
+
+          return result;
+        } catch (error) {
+          set({ isExecuting: false });
+          throw error;
+        }
+      },
+
+      clearExecutionResult: () => {
+        set({ executionResult: null, executionContext: null });
+      },
+
+      getExecutionContext: (skillId: string) => {
+        const { selectedMcpServerUrl } = get();
+        if (!selectedMcpServerUrl) return null;
+        return skillExecutorManager.getExecutorContext(selectedMcpServerUrl, skillId);
       },
 
       // 软链接 Actions
