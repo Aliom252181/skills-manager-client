@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Library, ShoppingBag, ShieldCheck, Settings, Box, Terminal } from 'lucide-react';
+import { LayoutDashboard, Library, ShoppingBag, ShieldCheck, Settings, Box, Terminal, MessageSquare } from 'lucide-react';
 import clsx from 'clsx';
 
 const Sidebar = () => {
@@ -7,6 +7,7 @@ const Sidebar = () => {
     { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
     { to: '/my-skills', icon: Library, label: 'My Skills' },
     { to: '/marketplace', icon: ShoppingBag, label: 'Marketplace' },
+    { to: '/codex', icon: MessageSquare, label: 'Codex' },
     { to: '/executor', icon: Terminal, label: 'Executor' },
     { to: '/security', icon: ShieldCheck, label: 'Security' },
     { to: '/settings', icon: Settings, label: 'Settings' },

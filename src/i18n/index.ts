@@ -9,6 +9,8 @@ const resources = {
       dashboard: "Dashboard",
       mySkills: "My Skills",
       marketplace: "Marketplace",
+      codex: "Codex",
+      executor: "Executor",
       security: "Security",
       settings: "Settings",
 

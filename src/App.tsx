@@ -4,6 +4,7 @@ import MySkills from './pages/MySkills';
 import Marketplace from './pages/Marketplace';
 import Settings from './pages/Settings';
 import Executor from './pages/Executor';
+import Codex from './pages/Codex';
 
 const router = createBrowserRouter([
   {
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
       {
         path: 'marketplace',
         element: <Marketplace />,
+      },
+      {
+        path: 'codex',
+        element: <Codex />,
       },
       {
         path: 'executor',
