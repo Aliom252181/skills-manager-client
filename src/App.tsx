@@ -3,8 +3,12 @@ import Layout from './components/layout/Layout';
 import MySkills from './pages/MySkills';
 import Marketplace from './pages/Marketplace';
 import Settings from './pages/Settings';
+import SettingsNew from './pages/SettingsNew';
 import Executor from './pages/Executor';
 import Codex from './pages/Codex';
+import WorkflowEditor from './pages/WorkflowEditor';
+import SchedulerPage from './pages/Scheduler';
+import MonitoringDashboard from './pages/Monitoring';
 
 const router = createBrowserRouter([
   {
@@ -32,8 +36,20 @@ const router = createBrowserRouter([
         element: <Executor />,
       },
       {
+        path: 'workflows',
+        element: <WorkflowEditor />,
+      },
+      {
+        path: 'scheduler',
+        element: <SchedulerPage />,
+      },
+      {
+        path: 'monitoring',
+        element: <MonitoringDashboard />,
+      },
+      {
         path: 'settings',
-        element: <Settings />,
+        element: <SettingsNew />,
       },
     ],
   },
@@ -41,6 +57,7 @@ const router = createBrowserRouter([
     path: '*',
     element: <Navigate to="/my-skills" replace />,
   }
+]);
 
 function App() {
   return <RouterProvider router={router} />;
