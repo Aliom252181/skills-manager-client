@@ -1,4 +1,4 @@
-import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+const COLORS = ['#6366F1', '#EC4899', '#F59E0B', '#10B981', '#3B82F6', '#EF4444'];
 
 interface ChartData {
   labels?: string[];
@@ -13,8 +13,6 @@ interface ChartMetadata {
   xAxisLabel?: string;
   yAxisLabel?: string;
 }
-
-const COLORS = ['#6366F1', '#EC4899', '#F59E0B', '#10B981', '#3B82F6', '#EF4444'];
 
 export class ChartCard {
   static render(container: HTMLElement, data: unknown, metadata?: ChartMetadata): void {

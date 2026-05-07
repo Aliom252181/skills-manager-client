@@ -2,7 +2,6 @@ import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
 import Layout from './components/layout/Layout';
 import MySkills from './pages/MySkills';
 import Marketplace from './pages/Marketplace';
-import Settings from './pages/Settings';
 import SettingsNew from './pages/SettingsNew';
 import Executor from './pages/Executor';
 import Codex from './pages/Codex';

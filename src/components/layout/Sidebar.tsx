@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { 
-  LayoutDashboard, Library, ShoppingBag, ShieldCheck, Settings, Box, 
+  Library, ShoppingBag, ShieldCheck, Settings, Box, 
   Terminal, MessageSquare, GitBranch, Clock, BarChart3 
 } from 'lucide-react';
 import clsx from 'clsx';
