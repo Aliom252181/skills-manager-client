@@ -323,7 +323,7 @@ const resources = {
       steps: "步骤",
       addStep: "添加步骤",
       selectWorkflow: "选择一个工作流或创建新的",
-      clickToBuild: "点击"添加步骤"开始构建工作流",
+      clickToBuild: "点击'添加步骤'开始构建工作流",
       runCount: "执行次数",
       created: "创建于",
       lastRun: "上次执行",
