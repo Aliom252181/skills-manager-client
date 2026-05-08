@@ -1,5 +1,3 @@
-import { Copy, Check } from 'lucide-react';
-
 interface CodeData {
   code: string;
   language?: string;

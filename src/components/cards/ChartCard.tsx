@@ -47,7 +47,7 @@ export class ChartCard {
     container.appendChild(wrapper);
   }
 
-  private static renderBarChart(data: { name: string; value: number }[], colors: string[], metadata?: ChartMetadata): string {
+  private static renderBarChart(data: { name: string; value: number }[], _colors: string[], metadata?: ChartMetadata): string {
     return `
       <div class="chart-container">
         ${metadata?.title ? `<div class="chart-title">${metadata.title}</div>` : ''}
@@ -63,7 +63,7 @@ export class ChartCard {
     `;
   }
 
-  private static renderLineChart(data: { name: string; value: number }[], colors: string[], metadata?: ChartMetadata): string {
+  private static renderLineChart(data: { name: string; value: number }[], _colors: string[], metadata?: ChartMetadata): string {
     return `
       <div class="chart-container">
         ${metadata?.title ? `<div class="chart-title">${metadata.title}</div>` : ''}
@@ -132,21 +132,20 @@ export class ChartCard {
     wrapper.className = 'chart-card-wrapper';
     wrapper.style.padding = '1rem';
 
+    const titleHtml = metadata?.title ? `<div style="font-weight: 600; margin-bottom: 0.5rem;">${metadata.title}</div>` : '';
+    
+    let chartHtml = '';
     if (chartType === 'line') {
-      wrapper.innerHTML = `
-        ${metadata?.title ? `<div style="font-weight: 600; margin-bottom: 0.5rem;">${metadata.title}</div>` : ''}
-      `;
+      chartHtml = this.renderLineChart(processedData, colors, metadata);
     } else if (chartType === 'pie') {
-      wrapper.innerHTML = `
-        ${metadata?.title ? `<div style="font-weight: 600; margin-bottom: 0.5rem;">${metadata.title}</div>` : ''}
-      `;
+      chartHtml = this.renderPieChart(processedData, colors);
     } else {
-      wrapper.innerHTML = `
-        ${metadata?.title ? `<div style="font-weight: 600; margin-bottom: 0.5rem;">${metadata.title}</div>` : ''}
-      `;
+      chartHtml = this.renderBarChart(processedData, colors, metadata);
     }
 
-    container.appendChild(wrapper);
+    wrapper.innerHTML = titleHtml + chartHtml;
+    chartContainer.appendChild(wrapper);
+    container.appendChild(chartContainer);
   }
 
   static update(container: HTMLElement, data: unknown): void {

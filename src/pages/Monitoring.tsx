@@ -1,26 +1,20 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMonitoringStore } from '../store/extendedStores';
-import { useStatsStore } from '../store/extendedStores';
+import { useMonitoringStore, useStatsStore } from '../store/extendedStores';
 import { 
-  BarChart3, TrendingUp, TrendingDown, Clock, CheckCircle, 
-  XCircle, AlertTriangle, Download, RefreshCw, Filter, Calendar
+  BarChart3, TrendingUp, Clock, CheckCircle, 
+  XCircle, Download, RefreshCw
 } from 'lucide-react';
 
 const MonitoringDashboard = () => {
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation();
   const {
-    dashboards,
     fetchDashboards,
-    createDashboard,
-    metrics,
-    fetchMetrics,
-    recordMetrics,
   } = useMonitoringStore();
   const { stats, fetchAllStats } = useStatsStore();
 
   const [timeRange, setTimeRange] = useState<'24h' | '7d' | '30d' | 'all'>('7d');
-  const [selectedSkill, setSelectedSkill] = useState<string>('all');
+  const [selectedSkill] = useState<string>('all');
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {

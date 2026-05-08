@@ -21,9 +21,9 @@ export class McpClient {
       this.socket = new WebSocket(this.url);
 
       this.socket.onopen = () => {
-        this.sendRequest('server_info').then((info: McpServerInfo) => {
-          this.serverInfo = info;
-          resolve(info);
+        this.sendRequest('server_info').then((info) => {
+          this.serverInfo = info as McpServerInfo;
+          resolve(info as McpServerInfo);
         }).catch(reject);
       };
 
@@ -31,8 +31,8 @@ export class McpClient {
         this.handleMessage(event.data);
       };
 
-      this.socket.onerror = (error) => {
-        reject({ code: 'connection_error', message: `WebSocket error: ${error.message}` });
+      this.socket.onerror = () => {
+        reject({ code: 'connection_error', message: 'WebSocket connection error' });
       };
 
       this.socket.onclose = () => {

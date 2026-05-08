@@ -4,11 +4,11 @@ import { useShortcutStore } from '../store/extendedStores';
 import { useNotificationStore } from '../store/extendedStores';
 import {
   Settings, Keyboard, Bell, X, Check, AlertCircle,
-  Info, AlertTriangle, CheckCircle, Trash2, BellRing
+  Info, AlertTriangle, CheckCircle, BellRing
 } from 'lucide-react';
 
 const SettingsPage = () => {
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation();
   const { shortcuts, fetchShortcuts, updateShortcut, resetShortcuts } = useShortcutStore();
   const { notifications, unreadCount, markAsRead, markAllAsRead, deleteNotification, clearExpired } = useNotificationStore();
 

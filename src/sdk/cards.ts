@@ -85,7 +85,7 @@ export class CardSystem {
         StatsCard.render(container, card.data, card.metadata);
         break;
       case 'code':
-        CodeCard.render(container, card.data, card.metadata);
+        CodeCard.render(container, card.data);
         break;
       case 'image':
         container.innerHTML = `<img src="${card.data}" alt="${card.title || 'image'}" />`;
@@ -115,7 +115,7 @@ export class CardSystem {
     const element = this.cards.get(id);
     if (!config || !element) return;
 
-    const content = element.querySelector('.acp-card-content');
+    const content = element.querySelector('.acp-card-content') as HTMLElement | null;
     if (content) {
       this.renderCardContent({ ...config, data } as AcpCard, content);
     }

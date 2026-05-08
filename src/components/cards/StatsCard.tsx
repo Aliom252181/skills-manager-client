@@ -1,5 +1,3 @@
-import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
-
 interface StatItem {
   label: string;
   value: string | number;

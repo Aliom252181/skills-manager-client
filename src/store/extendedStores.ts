@@ -1,9 +1,6 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
 import type {
-  SkillVersion,
   SkillDependency,
-  SkillManifest,
   VersionHistory,
   SkillBranch,
   SkillTemplate,
@@ -28,6 +25,7 @@ import type {
   MonitoringDashboard,
   DashboardWidget,
   ExecutionRecord,
+  PerformanceMetrics,
 } from '../types/extended';
 import { invoke } from '@tauri-apps/api/core';
 
@@ -464,7 +462,7 @@ export const useResourceStore = create<ResourceStore>((set) => ({
   },
 }));
 
-export const useDiscoveryStore = create<DiscoveryStore>((set, get) => ({
+export const useDiscoveryStore = create<DiscoveryStore>((set) => ({
   services: [],
   isScanning: false,
 
@@ -652,8 +650,10 @@ export const useStatsStore = create<StatsStore>((set, get) => ({
     try {
       const favorites = await invoke<SkillFavorite[]>('fetch_favorites');
       set({ favorites });
+      return favorites;
     } catch (error) {
       console.error('Failed to fetch favorites:', error);
+      return [];
     }
   },
 }));
@@ -1132,7 +1132,7 @@ export const useSchedulerStore = create<SchedulerStore>((set, get) => ({
   },
 }));
 
-function calculateNextRun(cron: string): number {
+function calculateNextRun(_cron: string): number {
   return Date.now() + 60000;
 }
 

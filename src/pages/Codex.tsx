@@ -1,8 +1,7 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSkillStore } from '../store/useSkillStore';
-import { Send, Loader2, Copy, Check, Trash2, ChevronDown, ChevronUp, MessageSquare, Terminal, Plus, Settings, X, FileText } from 'lucide-react';
-import type { AcpMessage } from '../sdk';
+import { Send, Loader2, Copy, Check, Trash2, MessageSquare, Terminal, Plus, Settings } from 'lucide-react';
 
 interface ChatMessage {
   id: string;
@@ -14,19 +13,17 @@ interface ChatMessage {
 }
 
 const Codex = () => {
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation();
   const {
     mcpConnections,
     selectedMcpServerUrl,
     availableTools,
-    connectMcpServer,
   } = useSkillStore();
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [expandedMessages, setExpandedMessages] = useState<Set<string>>(new Set());
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -39,14 +36,6 @@ const Codex = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-
-  const handleConnect = async () => {
-    try {
-      await connectMcpServer(selectedMcpServerUrl || 'ws://localhost:8080');
-    } catch (error) {
-      console.error('Failed to connect:', error);
-    }
-  };
 
   const handleSend = async () => {
     if (!inputValue.trim() || isLoading) return;
@@ -108,18 +97,6 @@ const Codex = () => {
       e.preventDefault();
       handleSend();
     }
-  };
-
-  const toggleExpand = (messageId: string) => {
-    setExpandedMessages(prev => {
-      const next = new Set(prev);
-      if (next.has(messageId)) {
-        next.delete(messageId);
-      } else {
-        next.add(messageId);
-      }
-      return next;
-    });
   };
 
   const copyToClipboard = async (text: string, messageId: string) => {

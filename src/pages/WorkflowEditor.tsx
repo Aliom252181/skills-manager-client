@@ -3,20 +3,18 @@ import { useTranslation } from 'react-i18next';
 import { useWorkflowStore } from '../store/extendedStores';
 import { useSkillStore } from '../store/useSkillStore';
 import { 
-  Plus, Play, Pause, Trash2, Edit3, Save, X, GripVertical, 
-  ChevronRight, Settings, ArrowRight, RefreshCw, CheckCircle, 
+  Plus, Play, Pause, Trash2, X, GripVertical, 
+  ArrowRight, RefreshCw, CheckCircle, 
   XCircle, Clock, AlertCircle, GitBranch
 } from 'lucide-react';
 
 const WorkflowEditor = () => {
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation();
   const {
     workflows,
-    currentWorkflow,
     isExecuting,
     fetchWorkflows,
     createWorkflow,
-    updateWorkflow,
     deleteWorkflow,
     executeWorkflow,
     pauseWorkflow,

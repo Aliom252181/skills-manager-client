@@ -4,17 +4,16 @@ import { useSchedulerStore } from '../store/extendedStores';
 import { useWorkflowStore } from '../store/extendedStores';
 import { useSkillStore } from '../store/useSkillStore';
 import { 
-  Clock, Plus, Play, Pause, Trash2, Edit3, Settings,
+  Clock, Plus, Play, Trash2,
   ToggleLeft, ToggleRight, RefreshCw, Calendar, Zap
 } from 'lucide-react';
 
 const SchedulerPage = () => {
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation();
   const {
     tasks,
     fetchTasks,
     createTask,
-    updateTask,
     deleteTask,
     toggleTask,
     runTaskNow,
@@ -71,7 +70,7 @@ const SchedulerPage = () => {
     const parts = cron.split(' ');
     if (parts.length !== 5) return cron;
 
-    const [minute, hour, day, month, weekday] = parts;
+    const [minute, hour] = parts;
 
     if (cron === '* * * * *') return i18n.language === 'zh' ? '每分钟' : 'Every minute';
     if (minute === '0' && hour === '*') return i18n.language === 'zh' ? '每小时' : 'Every hour';

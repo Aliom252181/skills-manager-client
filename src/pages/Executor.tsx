@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSkillStore } from '../store/useSkillStore';
-import { Terminal, Play, RefreshCw, X, ChevronDown, ChevronUp, Server, Zap, Code2, FileText, Settings } from 'lucide-react';
-import type { McpTool, ExecutionResult } from '../mcp';
+import { Terminal, Play, RefreshCw, X, Server, Zap, Code2, FileText, Settings } from 'lucide-react';
+import type { McpTool } from '../mcp';
 
 const Executor = () => {
   const { t, i18n } = useTranslation();
@@ -27,7 +27,6 @@ const Executor = () => {
   const [inputText, setInputText] = useState('');
   const [selectedTool, setSelectedTool] = useState<McpTool | null>(null);
   const [toolArguments, setToolArguments] = useState<Record<string, unknown>>({});
-  const [showToolPanel, setShowToolPanel] = useState(false);
   const [activeTab, setActiveTab] = useState<'execute' | 'tools'>('execute');
 
   const selectedSkill = installedSkills.find(s => s.id === selectedSkillId);
